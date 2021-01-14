@@ -1,7 +1,9 @@
 import structures as st
+import random
 
 class gameData:
   def __init__(self, numPlayers):
+    random.seed()
     if numPlayers > 5 or numPlayers < 2:
       raise Exception
     self.numPlayers = numPlayers
@@ -18,9 +20,13 @@ class gameData:
 
     self.players = []
     for i in range(0, self.numPlayers):
-      self.players.append(st.Player())
+      self.players.append(st.Player("PLAYER "+str(i+1)))
       for j in range(0, self.numCards):
         self.players[i].draw(self.deck)
+
+    self.active = random.randint(0, numPlayers-1)
+    self.turnsTaken = 0
+    self.turnHistory = []
 
     self.discards = []
     self.table = {}
@@ -38,7 +44,7 @@ class gameData:
   def printPlayers(self):
     for i in range(0, self.numPlayers):
       player = self.players[i]
-      print("PLAYER " + str(i+1) + " - " + str(player.handSize) + " Cards")
+      print(player.name + " - " + str(player.handSize) + " Cards")
       for j in range(0, player.handSize):
         print(player.hand[j].toString())
       print()

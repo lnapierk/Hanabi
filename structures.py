@@ -15,6 +15,8 @@ class Card:
   def __init__(self, color, value):
     self.color = color
     self.value = value
+    self.colorKnown = False
+    self.valueKnown = False
   
   def toString(self):
     return self.color.value+" "+str(self.value)
@@ -37,9 +39,10 @@ class Deck:
 
 
 class Player:
-  def __init__(self):
+  def __init__(self, name):
     self.hand = []
     self.handSize = 0
+    self.name = name
   
   def draw(self, deck):
     newCard = deck.dispense()
