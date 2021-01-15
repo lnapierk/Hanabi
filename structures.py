@@ -8,6 +8,11 @@ class Color(Enum):
   White = "White"
   Yellow = "Yellow"
 
+class MoveType(Enum):
+  Discard = "Discard"
+  Play = "Play"
+  Clue = "Clue"
+
 possibleValues = range(1,6)
 realValues = [1,1,1,2,2,3,3,4,4,5]
 
@@ -15,6 +20,8 @@ class Card:
   def __init__(self, color, value):
     self.color = color
     self.value = value
+    self.colorKnown = False
+    self.valueKnown = False
   
   def toString(self):
     return self.color.value+" "+str(self.value)
@@ -37,9 +44,10 @@ class Deck:
 
 
 class Player:
-  def __init__(self):
+  def __init__(self, name):
     self.hand = []
     self.handSize = 0
+    self.name = name
   
   def draw(self, deck):
     newCard = deck.dispense()
@@ -47,3 +55,19 @@ class Player:
       self.hand.append(newCard)
       self.handSize += 1
 
+class Move:
+  pass
+
+class Discard(Move):
+  def __init__(self, number):
+    self.whichCard = number
+    self.type = MoveType.Discard
+
+class Play(Move):
+  def __init__(self, number):
+    self.whichCard = number
+
+class Clue(Move):
+  def __init__(self, player, clue):
+    self.player = player
+    self.clue = clue
