@@ -8,11 +8,6 @@ class Color(Enum):
   White = "White"
   Yellow = "Yellow"
 
-class MoveType(Enum):
-  Discard = "Discard"
-  Play = "Play"
-  Clue = "Clue"
-
 possibleValues = range(1,6)
 realValues = [1,1,1,2,2,3,3,4,4,5]
 
@@ -24,7 +19,13 @@ class Card:
     self.valueKnown = False
   
   def toString(self):
-    return self.color.value+" "+str(self.value)
+    colorK = ""
+    valueK = ""
+    if self.colorKnown:
+      colorK = "(k)"
+    if self.valueKnown:
+      valueK = "(k)"
+    return self.color.value+colorK+" "+str(self.value)+valueK
 
 class Deck:
   def __init__(self):
@@ -55,19 +56,39 @@ class Player:
       self.hand.append(newCard)
       self.handSize += 1
 
+  def discard(self, index):
+    if index >= self.handSize:
+      return None
+    card = self.hand[index]
+    del self.hand[index]
+    self.handSize -= 1
+    return card
+
 class Move:
-  pass
+  def toString(self):
+    return "{Action: Nothing}"
 
 class Discard(Move):
   def __init__(self, number):
     self.whichCard = number
-    self.type = MoveType.Discard
+  def toString(self):
+    return "{Action: Discard,Card: "+str(self.whichCard)+"}"
 
 class Play(Move):
   def __init__(self, number):
     self.whichCard = number
+  def toString(self):
+    return "{Action: Play,Card: "+str(self.whichCard)+"}"
 
 class Clue(Move):
   def __init__(self, player, clue):
     self.player = player
     self.clue = clue
+  def toString(self):
+    actionStr = "Action: Clue"
+    playerStr = "Player: "+str(self.player)
+    if isinstance(self.clue, Color):
+      clueStr = "Clue: "+self.clue.value
+    else:
+      clueStr = "Clue: "+str(self.clue)
+    return "{"+actionStr+","+playerStr+","+clueStr+"}"
