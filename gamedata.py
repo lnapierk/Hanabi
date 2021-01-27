@@ -90,6 +90,8 @@ class gameData:
     player.draw(self.deck)
     if self.table[card.color] == (card.value - 1):
       self.table[card.color] = card.value
+      if card.value == 5 and self.clues < 8:
+        self.clues += 1
     else:
       self.bombs -= 1
       self.discards[card.color.value][card.value-1]-=1
@@ -126,10 +128,16 @@ class gameData:
       else:
         self.turnLimit = self.numPlayers
     if self.checkWin():
-      return 1
+      return 100000000+self.scoreGame()
     if self.checkLose():
-      return -1
-    return 0
+      return self.scoreGame()
+    return -1
+
+  def scoreGame(self):
+    total = 0
+    for color in st.Color:
+      total += self.table[color]
+    return total
 
   def checkWin(self):
     for color in st.Color:
