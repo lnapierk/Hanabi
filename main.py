@@ -5,11 +5,12 @@ if __name__ == "__main__":
   while 1:
     game = gamedata.gameData(4)
     while 1:
-      #game.printSituation()
-      #input("Press enter...")
+      game.printSituation()
+      input("Press enter...")
       move = game.chooseMove()
       #print(move.toString())
-      #input("Press enter...")
+      print(game.getPlay(move.index))
+      input("Press enter...")
       game.executeMove(move)
       outcome = game.postMove()
       if outcome >= 0:

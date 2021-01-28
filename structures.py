@@ -69,19 +69,22 @@ class Move:
     return "{Action: Nothing}"
 
 class Discard(Move):
-  def __init__(self, number):
+  def __init__(self, number, index):
     self.whichCard = number
+    self.index = index
   def toString(self):
     return "{Action: Discard,Card: "+str(self.whichCard)+"}"
 
 class Play(Move):
-  def __init__(self, number):
+  def __init__(self, number, index):
+    self.index = index
     self.whichCard = number
   def toString(self):
     return "{Action: Play,Card: "+str(self.whichCard)+"}"
 
 class Clue(Move):
-  def __init__(self, player, clue):
+  def __init__(self, player, clue, index):
+    self.index = index
     self.player = player
     self.clue = clue
   def toString(self):
