@@ -81,68 +81,66 @@ class gameData:
     playArray = []
     player = self.players[self.active]
     for j in range(0, self.numCards):
-      tempArray = np.zeros(10)
       if j < player.handSize:
         card = player.hand[j]
-        if card.colorKnown:
-          if card.color == st.Color.Blue: 
-            tempArray[0] = 1
-          elif card.color == st.Color.Red:
-            tempArray[1] = 1
-          elif card.color == st.Color.Green:
-            tempArray[2] = 1
-          elif card.color == st.Color.White:
-            tempArray[3] = 1
-          elif card.color == st.Color.Yellow:
-            tempArray[4] = 1
-        if card.valueKnown:
-          if card.value == 1:
-            tempArray[5] = 1
-          elif card.value == 2:
-            tempArray[6] = 1
-          elif card.value == 3:
-            tempArray[7] = 1
-          elif card.value == 4:
-            tempArray[8] = 1
-          elif card.value == 5:
-            tempArray[9] = 1
-        print(tempArray)
+        tempArray = self.getCardArray(card, True)
+        #print(tempArray)
       playArray = np.append(playArray, tempArray)
 
     for i in range(1,self.numPlayers):
       playerIndex = (self.active+i)%self.numPlayers
       player = self.players[playerIndex]
       for j in range(0, player.handSize):
-        tempArray = np.zeros(12)
         if j < player.handSize:
           card = player.hand[j]
-          if card.color == st.Color.Blue: 
-            tempArray[0] = 1
-          elif card.color == st.Color.Red:
-            tempArray[1] = 1
-          elif card.color == st.Color.Green:
-            tempArray[2] = 1
-          elif card.color == st.Color.White:
-            tempArray[3] = 1
-          elif card.color == st.Color.Yellow:
-            tempArray[4] = 1
-          if card.value == 1:
-            tempArray[5] = 1
-          elif card.value == 2:
-            tempArray[6] = 1
-          elif card.value == 3:
-            tempArray[7] = 1
-          elif card.value == 4:
-            tempArray[8] = 1
-          elif card.value == 5:
-            tempArray[9] = 1
-          if card.colorKnown:
-            tempArray[10] = 1
-          if card.valueKnown:
-            tempArray[11] = 1
-        print(tempArray)
+          tempArray = self.getCardArray(card, False)
+        #print(tempArray)
         playArray = np.append(playArray, tempArray)
+    
+    tempArray = (self.getDiscardArray())/3
+    playArray = np.append(playArray, tempArray)
     return playArray
+
+  def getCardArray(self, card, isSelf):
+    if isSelf==True:
+      tempArray = np.zeros(10)
+    else:
+      tempArray = np.zeros(12)
+    if card.colorKnown or isSelf==False:
+      if card.color == st.Color.Blue: 
+        tempArray[0] = 1
+      elif card.color == st.Color.Red:
+        tempArray[1] = 1
+      elif card.color == st.Color.Green:
+        tempArray[2] = 1
+      elif card.color == st.Color.White:
+        tempArray[3] = 1
+      elif card.color == st.Color.Yellow:
+        tempArray[4] = 1
+    if card.valueKnown or isSelf==False:
+      if card.value == 1:
+        tempArray[5] = 1
+      elif card.value == 2:
+        tempArray[6] = 1
+      elif card.value == 3:
+        tempArray[7] = 1
+      elif card.value == 4:
+        tempArray[8] = 1
+      elif card.value == 5:
+        tempArray[9] = 1
+    if isSelf==False:
+      if card.colorKnown:
+        tempArray[10] = 1
+      if card.valueKnown:
+        tempArray[11] = 1
+    return tempArray
+
+  def getDiscardArray(self):
+    outArray = []
+    for color in st.Color:
+      outArray = np.append(outArray, self.discards[color.value])
+    print(outArray)
+    return outArray
 
   def executeMove(self, move):
     if isinstance(move, st.Play):
