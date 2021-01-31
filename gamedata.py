@@ -99,6 +99,7 @@ class gameData:
     
     tempArray = (self.getDiscardArray())/3
     playArray = np.append(playArray, tempArray)
+    playArray = np.append(playArray, self.getTableArray())
     return playArray
 
   def getCardArray(self, card, isSelf):
@@ -139,8 +140,18 @@ class gameData:
     outArray = []
     for color in st.Color:
       outArray = np.append(outArray, self.discards[color.value])
-    print(outArray)
+    #print(outArray)
     return outArray
+
+  def getTableArray(self):
+    output = []
+    for color in st.Color:
+      tempArray = np.zeros(5)
+      if self.table[color] != 0:
+        tempArray[self.table[color]-1] = 1
+      output = np.append(output, tempArray)
+      #print(tempArray)
+    return output    
 
   def executeMove(self, move):
     if isinstance(move, st.Play):

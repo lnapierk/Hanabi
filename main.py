@@ -8,7 +8,7 @@ if __name__ == "__main__":
       game.printSituation()
       input("Press enter...")
       move = game.chooseMove()
-      #print(move.toString())
+      print(move.toString())
       print(game.getPlay(move.index))
       input("Press enter...")
       game.executeMove(move)
