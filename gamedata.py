@@ -37,7 +37,7 @@ class gameData:
     for color in st.Color:
       self.table[color] = 0
 
-  def chooseMove(self):
+  def chooseMove(self):#select a play to make
     player = self.players[self.active]
     totalMoves = (player.handSize * 2)
     if self.clues > 0:
@@ -77,7 +77,7 @@ class gameData:
       move = st.Clue(clueRecipient, clueContent, ogChoice)
       return move
 
-  def getPlay(self, selection):
+  def getPlay(self, selection):#get the full array representing a move and situation
     playArray = []
     player = self.players[self.active]
     for j in range(0, self.numCards):
@@ -100,9 +100,13 @@ class gameData:
     tempArray = (self.getDiscardArray())/3
     playArray = np.append(playArray, tempArray)
     playArray = np.append(playArray, self.getTableArray())
+    playArray = np.append(playArray, self.getMiscArray())
+    tempArray = np.zeros((player.handSize * 2)+(2*((self.numPlayers-1)*5)))
+    tempArray[selection-1] = 1
+    playArray = np.append(playArray, tempArray)
     return playArray
 
-  def getCardArray(self, card, isSelf):
+  def getCardArray(self, card, isSelf):#get the array representing the cards in a player's hand
     if isSelf==True:
       tempArray = np.zeros(10)
     else:
@@ -136,14 +140,14 @@ class gameData:
         tempArray[11] = 1
     return tempArray
 
-  def getDiscardArray(self):
+  def getDiscardArray(self):#get the array of discarded cards
     outArray = []
     for color in st.Color:
       outArray = np.append(outArray, self.discards[color.value])
     #print(outArray)
     return outArray
 
-  def getTableArray(self):
+  def getTableArray(self):#get the array of played cards
     output = []
     for color in st.Color:
       tempArray = np.zeros(5)
@@ -151,9 +155,20 @@ class gameData:
         tempArray[self.table[color]-1] = 1
       output = np.append(output, tempArray)
       #print(tempArray)
-    return output    
+    return output
 
-  def executeMove(self, move):
+  def getMiscArray(self):#get the array with clues, bombs, turns remaining, and the deck size
+    deckSize = self.deck.size
+    deckSize = deckSize / (50 - (self.numCards*self.numPlayers))  
+    clues = self.clues / 8
+    bombs = self.bombs / 3
+    if self.turnLimit == None:
+      turns = 1
+    else:
+      turns = self.turnLimit / self.numPlayers
+    return [deckSize, clues, bombs, turns]
+
+  def executeMove(self, move):#carry out a move
     if isinstance(move, st.Play):
       self.play(move.whichCard)
     elif isinstance(move, st.Clue):
@@ -161,7 +176,7 @@ class gameData:
     elif isinstance(move, st.Discard):
       self.discard(move.whichCard)
 
-  def play(self, whichCard):
+  def play(self, whichCard):#play a card
     player = self.players[self.active]
     card = player.discard(whichCard)
     player.draw(self.deck)
@@ -173,7 +188,7 @@ class gameData:
       self.bombs -= 1
       self.discards[card.color.value][card.value-1]-=1
     
-  def giveClue(self, recipient, clue):
+  def giveClue(self, recipient, clue):#give a clue
     if self.clues < 1:
       return
     absIndex = (self.active+recipient)%self.numPlayers
@@ -188,7 +203,7 @@ class gameData:
           card.valueKnown = True
     self.clues -= 1
 
-  def discard(self, index):
+  def discard(self, index):#discard
     player = self.players[self.active]
     card = player.discard(index)
     player.draw(self.deck)
@@ -196,7 +211,7 @@ class gameData:
     if self.clues < 8:
       self.clues += 1
 
-  def postMove(self):
+  def postMove(self):#actions to be taken after a move
     self.active += 1
     self.active = self.active % self.numPlayers
     if self.deck.size < 1:
@@ -210,19 +225,19 @@ class gameData:
       return self.scoreGame()
     return -1
 
-  def scoreGame(self):
+  def scoreGame(self):#calculate the score based on played cards
     total = 0
     for color in st.Color:
       total += self.table[color]
     return total
 
-  def checkWin(self):
+  def checkWin(self):#check if the game has been won
     for color in st.Color:
       if self.table[color]!=5:
         return False
     return True
 
-  def checkLose(self):
+  def checkLose(self):#check if the game has been lost
     if self.bombs < 1:
       return True
     if self.turnLimit == 0:
@@ -233,7 +248,7 @@ class gameData:
           return True
     return False
 
-  def printDeck(self):
+  def printDeck(self):#print the cards in the deck for debugging
     print("DECK")
     print(self.deck.size)
     for i in range(0, self.deck.size):
@@ -241,7 +256,7 @@ class gameData:
       print(str(i+1)+". ", end="")
       print(card.toString())
 
-  def printPlayers(self):
+  def printPlayers(self):#print players' hands
     for i in range(0, self.numPlayers):
       player = self.players[i]
       print(player.name + " - " + str(player.handSize) + " Cards")

@@ -1,15 +1,22 @@
 import gamedata
+import numpy as np
 
 if __name__ == "__main__":
   totalGames = 0
   while 1:
+    plays = []
+    numPlays = 0
     game = gamedata.gameData(4)
     while 1:
       game.printSituation()
       input("Press enter...")
       move = game.chooseMove()
       print(move.toString())
-      print(game.getPlay(move.index))
+      if len(plays) > 0:
+        plays = np.vstack((plays, game.getPlay(move.index)))
+      else:
+        plays = game.getPlay(move.index)
+      numPlays += 1
       input("Press enter...")
       game.executeMove(move)
       outcome = game.postMove()
@@ -20,9 +27,12 @@ if __name__ == "__main__":
       input("Win "+str(outcome))
     elif outcome >= 0:
       input("Loss "+str(outcome))
-    
+    outcomes = np.full((numPlays,1),outcome)
+    plays = np.hstack((plays, outcomes))
+    np.savetxt("dataset.csv", plays, delimiter=",")
+
     totalGames += 1
-    if totalGames > 10000000:
+    if totalGames > 1:
       break
 
 
