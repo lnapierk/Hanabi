@@ -3,6 +3,8 @@ import numpy as np
 
 if __name__ == "__main__":
   totalGames = 0
+  totalPlays = 0
+  fileSuffix = 0
   cont = ""
   while 1:
     plays = []
@@ -12,7 +14,7 @@ if __name__ == "__main__":
       #game.printSituation()
       #input("Press enter...")
       move = game.chooseMove()
-      print(move.toString())
+      #print(move.toString())
       if len(plays) > 0:
         plays = np.vstack((plays, game.getPlay(move.index)))
       else:
@@ -33,15 +35,18 @@ if __name__ == "__main__":
       plays = np.hstack((plays, outcomes))
     else:
       plays = np.append(plays, [outcome])
+    totalPlays += numPlays
     #for play in plays:
     #  print(play)
     #  input("press enter...")
-    with open("dataset.csv",'a') as dataFile:
+    with open("dataset"+str(fileSuffix)+".csv",'a') as dataFile:
       np.savetxt(dataFile, plays)
     #np.savetxt("dataset.csv", plays, delimiter=",")
 
     totalGames += 1
-    if totalGames > 1000000:
+    #if totalGames > 1000000:
+    #  break
+    if totalPlays > 3000:
       break
 
 
