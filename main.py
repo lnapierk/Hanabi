@@ -1,7 +1,10 @@
 import gamedata
 import numpy as np
+import hanabiTrainer
 
-if __name__ == "__main__":
+def generateData():
+  print("play")
+  return
   totalGames = 0
   totalPlays = 0
   fileSuffix = 0
@@ -49,11 +52,14 @@ if __name__ == "__main__":
     if totalPlays > 3000:
       break
 
+if __name__ == "__main__":
+  todo = input("Play or train?\n")
+  if todo.upper() == "PLAY":
+    generateData()
+  elif todo.upper() == "TRAIN":
+    trainer = hanabiTrainer.hanabiTrainer()
+    trainer.loadData()
+  else:
+    print("Don't be an idiot, Dwigt\n")
 
 
-
-  #game.play(2)
-  #game.printSituation()
-  #game.printDeck()
-  #print()
-  #game.printPlayers()

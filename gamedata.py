@@ -80,14 +80,14 @@ class gameData:
   def getPlay(self, selection):#get the full array representing a move and situation
     playArray = []
     player = self.players[self.active]
-    for j in range(0, self.numCards):
+    for j in range(0, self.numCards):# go through your own cards
       if j < player.handSize:
         card = player.hand[j]
         tempArray = self.getCardArray(card, True)
         #print(tempArray)
       playArray = np.append(playArray, tempArray)
 
-    for i in range(1,self.numPlayers):
+    for i in range(1,self.numPlayers):# go through other players
       playerIndex = (self.active+i)%self.numPlayers
       player = self.players[playerIndex]
       for j in range(0, player.handSize):
