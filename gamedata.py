@@ -83,7 +83,7 @@ class gameData:
     for j in range(0, self.numCards):# go through your own cards
       if j < player.handSize:
         card = player.hand[j]
-        tempArray = self.getCardArray(card, True)
+        tempArray = self.getCardArraySimple(card, True)
         #print(tempArray)
       playArray = np.append(playArray, tempArray)
 
@@ -93,19 +93,30 @@ class gameData:
       for j in range(0, player.handSize):
         if j < player.handSize:
           card = player.hand[j]
-          tempArray = self.getCardArray(card, False)
+          tempArray = self.getCardArraySimple(card, False)
         #print(tempArray)
         playArray = np.append(playArray, tempArray)
     
-    tempArray = (self.getDiscardArray())/3
+    tempArray = (self.getDiscardArray())#/3
     playArray = np.append(playArray, tempArray)
-    playArray = np.append(playArray, self.getTableArray())
-    playArray = np.append(playArray, self.getMiscArray())
-    tempArray = np.zeros((player.handSize * 2)+(2*((self.numPlayers-1)*5)))
-    tempArray[selection-1] = 1
-    playArray = np.append(playArray, tempArray)
+    playArray = np.append(playArray, self.getTableArraySimple())
+    playArray = np.append(playArray, self.getMiscArraySimple())
+    #tempArray = np.zeros((player.handSize * 2)+(2*((self.numPlayers-1)*5)))
+    #tempArray[selection-1] = 1
+    #playArray = np.append(playArray, tempArray)
+    playArray = np.append(playArray, [selection])
     return playArray
+  def getCardArraySimple(self, card, isSelf):
+    colorVal = card.color.value
+    numberVal = card.value
+    if isSelf == True:
+      if card.colorKnown == False:
+        colorVal = "unknown"
+      if card.valueKnown == False:
+        numberVal = "unknown"
+      return [colorVal, numberVal]
 
+    return [colorVal, card.colorKnown, numberVal, card.valueKnown]
   def getCardArray(self, card, isSelf):#get the array representing the cards in a player's hand
     if isSelf==True:
       tempArray = np.zeros(10)
@@ -154,7 +165,14 @@ class gameData:
       if self.table[color] != 0:
         tempArray[self.table[color]-1] = 1
       output = np.append(output, tempArray)
-      #print(tempArray)
+      #input(tempArray)
+    return output
+
+  def getTableArraySimple(self):#get the array of played cards
+    output = []
+    for color in st.Color:
+      output = np.append(output, [self.table[color]])
+      #input(tempArray)
     return output
 
   def getMiscArray(self):#get the array with clues, bombs, turns remaining, and the deck size
@@ -167,6 +185,19 @@ class gameData:
     else:
       turns = self.turnLimit / self.numPlayers
     return [deckSize, clues, bombs, turns]
+
+  def getMiscArraySimple(self):#get the array with clues, bombs, turns remaining, and the deck size
+    deckSize = self.deck.size
+    deckSize = deckSize  
+    clues = self.clues
+    bombs = self.bombs
+    if self.turnLimit == None:
+      turns = "inf"
+    else:
+      turns = self.turnLimit
+    output = [deckSize, clues, bombs, turns]
+    #print(output)
+    return output
 
   def executeMove(self, move):#carry out a move
     if isinstance(move, st.Play):

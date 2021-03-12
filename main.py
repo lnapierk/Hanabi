@@ -3,8 +3,8 @@ import numpy as np
 import hanabiTrainer
 
 def generateData():
-  print("play")
-  return
+  #print("play")
+  #return
   totalGames = 0
   totalPlays = 0
   fileSuffix = 0
@@ -18,10 +18,14 @@ def generateData():
       #input("Press enter...")
       move = game.chooseMove()
       #print(move.toString())
+      onePlay = game.getPlay(move.index)
       if len(plays) > 0:
-        plays = np.vstack((plays, game.getPlay(move.index)))
+        #plays = np.vstack((plays, game.getPlay(move.index)))
+        plays = np.vstack((plays, onePlay))
       else:
-        plays = game.getPlay(move.index)
+        plays = onePlay#game.getPlay(move.index)
+      #print(onePlay)
+      #print("huh")
       numPlays += 1
       #input("Press enter...")
       game.executeMove(move)
@@ -49,7 +53,7 @@ def generateData():
     totalGames += 1
     #if totalGames > 1000000:
     #  break
-    if totalPlays > 3000:
+    if totalPlays > 2:
       break
 
 if __name__ == "__main__":
