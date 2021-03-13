@@ -77,6 +77,20 @@ class gameData:
       move = st.Clue(clueRecipient, clueContent, ogChoice)
       return move
 
+  def getLabels(self):
+    outArray = []
+    for j in range(0, self.numCards):
+      outArray = np.append(outArray, ["SelfCard"+str(j)+"Color", "SelfCard"+str(j)+"Number"])
+    for k in range(1, self.numPlayers):
+      for i in range(0, self.numCards):
+        outArray = np.append(outArray, ["Player"+str(k)+"Card"+str(i)+"Color","Player"+str(k)+"Card"+str(i)+"ColorKnown","Player"+str(k)+"Card"+str(i)+"Number","Player"+str(k)+"Card"+str(i)+"NumberKnown"])
+    for color in st.Color:
+      outArray = np.append(outArray,[color.value+str(1)+"s",color.value+str(2)+"s",color.value+str(3)+"s",color.value+str(4)+"s",color.value+str(5)+"s"])
+    for color in st.Color:
+      outArray = np.append(outArray,[color.value+"Played"])
+    outArray = np.append(outArray, ["DeckSize","Clues","Bombs","Turns","Score"])
+    return outArray
+
   def getPlay(self, selection):#get the full array representing a move and situation
     playArray = []
     player = self.players[self.active]
@@ -85,30 +99,34 @@ class gameData:
         card = player.hand[j]
         tempArray = self.getCardArraySimple(card, True)
         #print(tempArray)
+      else:
+        tempArray = ["none", "none"]
       playArray = np.append(playArray, tempArray)
 
     for i in range(1,self.numPlayers):# go through other players
       playerIndex = (self.active+i)%self.numPlayers
       player = self.players[playerIndex]
-      for j in range(0, player.handSize):
+      for j in range(0, self.numCards):
         if j < player.handSize:
           card = player.hand[j]
           tempArray = self.getCardArraySimple(card, False)
         #print(tempArray)
         playArray = np.append(playArray, tempArray)
     
-    tempArray = (self.getDiscardArray())#/3
+    #tempArray = self.getDiscardArray()/3
+    tempArray = self.getDiscardArraySimple()
     playArray = np.append(playArray, tempArray)
     playArray = np.append(playArray, self.getTableArraySimple())
     playArray = np.append(playArray, self.getMiscArraySimple())
     #tempArray = np.zeros((player.handSize * 2)+(2*((self.numPlayers-1)*5)))
     #tempArray[selection-1] = 1
     #playArray = np.append(playArray, tempArray)
-    playArray = np.append(playArray, [selection])
+    playArray = np.append(playArray, [str(selection)])
     return playArray
+
   def getCardArraySimple(self, card, isSelf):
     colorVal = card.color.value
-    numberVal = card.value
+    numberVal = str(card.value)
     if isSelf == True:
       if card.colorKnown == False:
         colorVal = "unknown"
@@ -116,7 +134,7 @@ class gameData:
         numberVal = "unknown"
       return [colorVal, numberVal]
 
-    return [colorVal, card.colorKnown, numberVal, card.valueKnown]
+    return [colorVal, str(card.colorKnown), numberVal, str(card.valueKnown)]
   def getCardArray(self, card, isSelf):#get the array representing the cards in a player's hand
     if isSelf==True:
       tempArray = np.zeros(10)
@@ -158,6 +176,14 @@ class gameData:
     #print(outArray)
     return outArray
 
+  def getDiscardArraySimple(self):#get the array of discarded cards
+    outArray = []
+    for color in st.Color:
+      for discard in self.discards[color.value]:
+        outArray = np.append(outArray, [str(discard)])
+    #print(outArray)
+    return outArray
+
   def getTableArray(self):#get the array of played cards
     output = []
     for color in st.Color:
@@ -171,7 +197,7 @@ class gameData:
   def getTableArraySimple(self):#get the array of played cards
     output = []
     for color in st.Color:
-      output = np.append(output, [self.table[color]])
+      output = np.append(output, [str(self.table[color])])
       #input(tempArray)
     return output
 
@@ -187,14 +213,14 @@ class gameData:
     return [deckSize, clues, bombs, turns]
 
   def getMiscArraySimple(self):#get the array with clues, bombs, turns remaining, and the deck size
-    deckSize = self.deck.size
+    deckSize = str(self.deck.size)
     deckSize = deckSize  
-    clues = self.clues
-    bombs = self.bombs
+    clues = str(self.clues)
+    bombs = str(self.bombs)
     if self.turnLimit == None:
       turns = "inf"
     else:
-      turns = self.turnLimit
+      turns = str(self.turnLimit)
     output = [deckSize, clues, bombs, turns]
     #print(output)
     return output

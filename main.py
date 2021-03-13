@@ -24,8 +24,6 @@ def generateData():
         plays = np.vstack((plays, onePlay))
       else:
         plays = onePlay#game.getPlay(move.index)
-      #print(onePlay)
-      #print("huh")
       numPlays += 1
       #input("Press enter...")
       game.executeMove(move)
@@ -44,10 +42,12 @@ def generateData():
       plays = np.append(plays, [outcome])
     totalPlays += numPlays
     #for play in plays:
-    #  print(play)
-    #  input("press enter...")
+    #print(plays)
+    #input("press enter...")
     with open("dataset"+str(fileSuffix)+".csv",'a') as dataFile:
-      np.savetxt(dataFile, plays)
+      #np.savetxt(dataFile, game.getLabels(), fmt="%s", delimiter=",")
+      dataFile.write(",".join(game.getLabels())+"\n")
+      np.savetxt(dataFile, plays, fmt="%s", delimiter=",")
     #np.savetxt("dataset.csv", plays, delimiter=",")
 
     totalGames += 1
