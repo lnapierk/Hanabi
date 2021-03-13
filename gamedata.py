@@ -88,7 +88,7 @@ class gameData:
       outArray = np.append(outArray,[color.value+str(1)+"s",color.value+str(2)+"s",color.value+str(3)+"s",color.value+str(4)+"s",color.value+str(5)+"s"])
     for color in st.Color:
       outArray = np.append(outArray,[color.value+"Played"])
-    outArray = np.append(outArray, ["DeckSize","Clues","Bombs","Turns","Score"])
+    outArray = np.append(outArray, ["DeckSize","Clues","Bombs","Turns","Move","Score"])
     return outArray
 
   def getPlay(self, selection):#get the full array representing a move and situation
