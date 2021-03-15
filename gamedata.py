@@ -180,7 +180,7 @@ class gameData:
     outArray = []
     for color in st.Color:
       for discard in self.discards[color.value]:
-        outArray = np.append(outArray, [str(discard)])
+        outArray = np.append(outArray, [str(discard/3)])
     #print(outArray)
     return outArray
 
@@ -213,14 +213,14 @@ class gameData:
     return [deckSize, clues, bombs, turns]
 
   def getMiscArraySimple(self):#get the array with clues, bombs, turns remaining, and the deck size
-    deckSize = str(self.deck.size)
-    deckSize = deckSize  
-    clues = str(self.clues)
-    bombs = str(self.bombs)
+    deckSize = self.deck.size
+    deckSize = str(deckSize / (50 - (self.numCards*self.numPlayers)))  
+    clues = str(self.clues/8)
+    bombs = str(self.bombs/3)
     if self.turnLimit == None:
       turns = "inf"
     else:
-      turns = str(self.turnLimit)
+      turns = str(self.turnLimit/self.numPlayers)
     output = [deckSize, clues, bombs, turns]
     #print(output)
     return output
