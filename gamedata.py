@@ -88,7 +88,7 @@ class gameData:
       outArray = np.append(outArray,[color.value+str(1)+"s",color.value+str(2)+"s",color.value+str(3)+"s",color.value+str(4)+"s",color.value+str(5)+"s"])
     for color in st.Color:
       outArray = np.append(outArray,[color.value+"Played"])
-    outArray = np.append(outArray, ["DeckSize","Clues","Bombs","Turns","Move","Score"])
+    outArray = np.append(outArray, ["DeckSize","Clues","Bombs","UseTurns","Turns","Move","Score"])
     return outArray
 
   def getPlay(self, selection):#get the full array representing a move and situation
@@ -218,10 +218,12 @@ class gameData:
     clues = str(self.clues/8)
     bombs = str(self.bombs/3)
     if self.turnLimit == None:
-      turns = "inf"
+      turns = "1"
+      useTurns = "False"
     else:
       turns = str(self.turnLimit/self.numPlayers)
-    output = [deckSize, clues, bombs, turns]
+      useTurns = "False"
+    output = [deckSize, clues, bombs, useTurns, turns]
     #print(output)
     return output
 
